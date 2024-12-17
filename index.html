@@ -1,10 +1,45 @@
 <!doctype html>
 <html>
-  <body>
-  <canvas id="myCanvas" width="600" height="400" style="border:1px solid #000000;"></canvas>
-  </body>
+  <header>
+    <style>
+  .div1 {
+    display: none;
+  }
 
-  <script type="text/javascript">
+  .div2 {
+    display: none;
+  }
+  #r1:checked + label + .div1 {
+  display: block;
+}
+
+  #r2:checked + label + .div2 {
+  display: block;
+}
+    </style>
+  </header>
+  <body>
+  <legend>Selectionner niveau :</legend>
+
+  <input type="radio" id="0" name="menu" value="0" checked class="radio"/>
+  <label for="0">Demontration: jeu complet et fonctionel</label>
+
+  <input type="radio" id="r1" name="menu" value="1" class="radio"/>
+  <label for="r1">Exercice 1</label>
+  <div class ="div1">
+    <textarea id="f1" name="f1" rows="4" cols="50">taille_raquette_1 = 10</textarea>
+  </div>
+<input type="radio" id="r2" name="menu" value="2" class="radio"/>
+<label for="r2">Exercice 2</label>
+<div class ="div2">
+  <textarea id="f2" name="f2" rows="4" cols="50">balle_vitesse_y = balle_vitesse_y</textarea>
+</div>
+
+<fieldset>
+<canvas id="myCanvas" width="600" height="400" style="border:1px solid #000000;"></canvas>
+</fieldset>
+
+<script type="text/javascript">
 const canvas = document.getElementById("myCanvas")
 const ctx = canvas.getContext("2d")
 
@@ -17,7 +52,7 @@ var balle_vitesse_x
 var balle_vitesse_y
 
 const raquette_taille_x = 10
-const raquette_taille_y = 50
+var raquette_taille_y = 50
 const raquette_vitesse = 15
 
 const raquette_1_position_x = 30
@@ -26,10 +61,10 @@ var raquette_1_position_y = 200
 const raquette_2_position_x = canvas.width - raquette_1_position_x
 var raquette_2_position_y = 200
 
+var touche_q_enfoncee = false
 var touche_w_enfoncee = false
-var touche_s_enfoncee = false
-var touche_i_enfoncee = false
-var touche_k_enfoncee = false
+var touche_o_enfoncee = false
+var touche_p_enfoncee = false
 
 nouvelle_partie()
 
@@ -37,6 +72,13 @@ setInterval(boucle_principale, 33)
 
 // Cette fonction est appelée 30 fois par seconde, et notre jeu bouge a chaque fois qu'elle est appelée
 function boucle_principale(){
+  if (document.querySelector('input[name="menu"]:checked').value == 1){
+    raquette_taille_y = 10;
+    try {
+      eval(document.getElementById('f1').value)
+    } catch{}
+  }
+  else {raquette_taille_y = 50}
   deplacer_raquettes() // Cette fonction sert à calculer ou seront les deux raquettes la prochaine image
   deplacer_balle() // Cette fonction sert à calculer ou sera la balle la prochaine image
 
@@ -47,15 +89,16 @@ function boucle_principale(){
 }
 
 function effacer_canvas(){
-  ctx.clearRect(0, 0, canvas.width, canvas.height);}
+  ctx.reset()
+}
 
 function deplacer_raquettes(){
   // On déplace la raquette du joueur s'il appuie sur une touche
-  if (touche_w_enfoncee) raquette_1_position_y -= raquette_vitesse
-  if (touche_s_enfoncee) raquette_1_position_y += raquette_vitesse
+  if (touche_q_enfoncee) raquette_1_position_y -= raquette_vitesse
+  if (touche_w_enfoncee) raquette_1_position_y += raquette_vitesse
 
-  if (touche_i_enfoncee) raquette_2_position_y -= raquette_vitesse
-  if (touche_k_enfoncee) raquette_2_position_y += raquette_vitesse
+  if (touche_o_enfoncee) raquette_2_position_y -= raquette_vitesse
+  if (touche_p_enfoncee) raquette_2_position_y += raquette_vitesse
   // On verifie que la palette ne dépace pas de l'écran
   raquette_1_position_y = Math.min(raquette_1_position_y, canvas.height - raquette_taille_y/2)
   raquette_1_position_y = Math.max(0 + raquette_taille_y/2 ,raquette_1_position_y)
@@ -81,7 +124,12 @@ function collisions_murs(){
   return false
   }
 function rebondir_mur(){
-  balle_vitesse_y = -balle_vitesse_y
+  if (document.querySelector('input[name="menu"]:checked').value != 2){
+    balle_vitesse_y = -balle_vitesse_y
+  }
+  else try {
+    eval(document.getElementById('f2').value)
+  } catch{}
 }
 
 function collisions_raquette_1(){
@@ -156,16 +204,16 @@ function dessiner_balle(){
 addEventListener("keydown", (e) => touche_pressee(e))
 addEventListener("keyup", (e) => touche_relachee(e))
 function touche_pressee(e){
+  if (e.key == 'q') {touche_q_enfoncee = true}
   if (e.key == 'w') {touche_w_enfoncee = true}
-  if (e.key == 's') {touche_s_enfoncee = true}
-  if (e.key == 'i') {touche_i_enfoncee = true}
-  if (e.key == 'k') {touche_k_enfoncee = true}
+  if (e.key == 'o') {touche_o_enfoncee = true}
+  if (e.key == 'p') {touche_p_enfoncee = true}
 }
 function touche_relachee(e){
+  if (e.key == 'q') {touche_q_enfoncee = false}
   if (e.key == 'w') {touche_w_enfoncee = false}
-  if (e.key == 's') {touche_s_enfoncee = false}
-  if (e.key == 'i') {touche_i_enfoncee = false}
-  if (e.key == 'k') {touche_k_enfoncee = false}
+  if (e.key == 'o') {touche_o_enfoncee = false}
+  if (e.key == 'p') {touche_p_enfoncee = false}
 }
   </script>
 </html>
