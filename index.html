@@ -50,7 +50,8 @@ var balle_position_y = canvas.height/2
 
 var balle_vitesse_x
 var balle_vitesse_y
-
+var balle_vitesse_depart = 5
+  
 const raquette_taille_x = 10
 var raquette_taille_y = 50
 const raquette_vitesse = 15
@@ -171,7 +172,7 @@ function collisions_buts(){
 function nouvelle_partie(){
   balle_position_x = canvas.width/2
   balle_position_y = canvas.height/2
-  balle_vitesse_x = 5 * Math.sign(Math.random() - 0.5)
+  balle_vitesse_x = balle_vitesse_depart * Math.sign(Math.random() - 0.5)
   balle_vitesse_y = Math.sign(Math.random()-0.5) * ((Math.random())*3 + 5)
 }
 
