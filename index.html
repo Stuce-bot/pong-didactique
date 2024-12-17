@@ -9,6 +9,9 @@
   .div2 {
     display: none;
   }
+  .div3 {
+    display: none;
+  }
   #r1:checked + label + .div1 {
   display: block;
 }
@@ -16,6 +19,10 @@
   #r2:checked + label + .div2 {
   display: block;
 }
+  #r3:checked + label + .div3{
+  display: block;
+}
+
     </style>
   </header>
   <body>
@@ -31,13 +38,35 @@
   <input type="radio" id="r1" name="menu" value="1" class="radio"/>
   <label for="r1">Exercice 1</label>
   <div class ="div1">
+    <p>Catastrophe ! <br>
+Les raquettes sont beaucoup trop petites pour jouer, essaye de changer la taille pour voir ! <br>
+Tu peux aussi changer la vitesse a laquelle la balle part en changeant balle_vitesse_depart <br>
+</p>
     <textarea id="f1" name="f1" rows="4" cols="50">taille_raquette_1 = 10</textarea>
   </div>
-<input type="radio" id="r2" name="menu" value="2" class="radio"/>
-<label for="r2">Exercice 2</label>
+<input type="radio" id="r3" name="menu" value="3" class="radio"/>
+<label for="r3">Exercice 2</label>
+
+<div class ="div3">
+  <p>Terrible <br>
+    Le joueur de gauche vaut absolument compter ses buts, il a donc créé un compteur, <br>
+    mais il n'a pas encore écrit la fonction qui augmente le score. <br>
+    Le score de ce joueur est enregistré dans la variable score_1 <br>
+    Écrit ci-dessous le contenu de la fonction augmenter score !
+  </p>
+  <textarea id="f3" name="f3" rows="4" cols="50"></textarea>
+
+</div><input type="radio" id="r2" name="menu" value="2" class="radio"/>
+<label for="r2">Exercice 3</label>
 <div class ="div2">
+  <p>Catastrophe !<br>
+    La balle n'a pas l'air de rebondir sur les murs, on ne peut plus jouer si elle sort du canvas ! <br>
+    Comment faire pour changer le sens de la vitesse de la balle ?
+    </p>
   <textarea id="f2" name="f2" rows="4" cols="50">balle_vitesse_y = balle_vitesse_y</textarea>
+
 </div>
+
 
 
 
@@ -52,6 +81,7 @@ var balle_position_y = canvas.height/2
 
 var balle_vitesse_x
 var balle_vitesse_y
+var balle_vitesse_depart = 5
 
 const raquette_taille_x = 10
 var raquette_taille_y = 50
@@ -67,6 +97,8 @@ var touche_q_enfoncee = false
 var touche_w_enfoncee = false
 var touche_o_enfoncee = false
 var touche_p_enfoncee = false
+
+var score_1 = 0
 
 nouvelle_partie()
 
@@ -88,6 +120,11 @@ function boucle_principale(){
   effacer_canvas()
   dessiner_raquettes()
   dessiner_balle()
+
+  if (document.querySelector('input[name="menu"]:checked').value == 3){
+    ctx.font = "48px serif";
+    ctx.fillText(score_1, 10, 50);
+  }
 }
 
 function effacer_canvas(){
@@ -102,7 +139,7 @@ function deplacer_raquettes(){
   if (touche_o_enfoncee) raquette_2_position_y -= raquette_vitesse
   if (touche_p_enfoncee) raquette_2_position_y += raquette_vitesse
   // On verifie que la palette ne dépace pas de l'écran
-  raquette_1_position_y = Math.min(raquette_1_position_y, canvas.height - raquette_taille_y/2)
+raquette_1_position_y = Math.min(raquette_1_position_y, canvas.height - raquette_taille_y/2)
   raquette_1_position_y = Math.max(0 + raquette_taille_y/2 ,raquette_1_position_y)
   
   raquette_2_position_y = Math.min(raquette_2_position_y, canvas.height - raquette_taille_y/2)
@@ -161,10 +198,16 @@ function rebondir_raquette_2(){
 }
 
 function collisions_buts(){
-  if (balle_position_x < 0){ 
+  if (balle_position_x < 0){
+
     return true
   }
   if (balle_position_x > canvas.width){
+    if (document.querySelector('input[name="menu"]:checked').value == 3){
+      try {
+        eval(document.getElementById('f3').value)
+      } catch{}
+    }
     return true
   }
   return false
@@ -173,7 +216,7 @@ function collisions_buts(){
 function nouvelle_partie(){
   balle_position_x = canvas.width/2
   balle_position_y = canvas.height/2
-  balle_vitesse_x = 5 * Math.sign(Math.random() - 0.5)
+  balle_vitesse_x = balle_vitesse_depart * Math.sign(Math.random() - 0.5)
   balle_vitesse_y = Math.sign(Math.random()-0.5) * ((Math.random())*3 + 5)
 }
 
@@ -219,4 +262,3 @@ function touche_relachee(e){
 }
   </script>
 </html>
-
